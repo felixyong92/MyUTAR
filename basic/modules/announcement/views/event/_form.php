@@ -65,7 +65,7 @@ use yii\helpers\ArrayHelper;
 
 
     ])->label(false); ?>
-    <p><font color ="red">*Hold <strong>CTRL</strong> to select multiple images*</font></p>
+    <p><font color ="red">*Hold <strong>CTRL</strong> to select multiple attachments*</font></p>
 
   <br/>
 
