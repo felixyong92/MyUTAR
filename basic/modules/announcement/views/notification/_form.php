@@ -32,7 +32,7 @@ use kartik\widgets\FileInput;
             'accept' => 'image/*',
             'multiple'=>true
         ]
-       
+
     ])->label(false); ?>
 
     </div>
@@ -46,15 +46,15 @@ use kartik\widgets\FileInput;
             'showUpload' => false,
             'browseLabel' =>  'Select Attachment',
             'maxFileSize' => 40000,
-        ],  
+        ],
          'options' => [
              'accept' => 'docx/doc/pdf/*',
              'multiple'=>true
         ],
 
-       
-    ])->label(false); ?>
 
+    ])->label(false); ?>
+    <p><font color = "red">*Hold <Strong>CTRL</strong> to select multiple attachments*</font><p>
   <br/>
 
     <?= $form->field($model, 'link')->textInput(['maxlength' => true]) ?>
