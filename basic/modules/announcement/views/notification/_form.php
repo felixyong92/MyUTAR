@@ -54,7 +54,7 @@ use kartik\widgets\FileInput;
 
 
     ])->label(false); ?>
-    <p><font color = "red">*Hold <Strong>CTRL</strong> to select multiple attachments*</font><p>
+    <p><font color = "red">*Hold <Strong>CTRL</strong> to select multiple attachments*</font></p>
   <br/>
 
     <?= $form->field($model, 'link')->textInput(['maxlength' => true]) ?>
