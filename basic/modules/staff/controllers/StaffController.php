@@ -33,14 +33,14 @@ class StaffController extends Controller
             ],
         ];
     }
-	
+
 	public function beforeAction($action)
 	{
         if (Yii::$app->user->isGuest)
             Yii::$app->user->loginRequired();
-		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin') 
+		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && Yii::$app->user->identity->dsResponsibility !== 'Manage User') 
 			throw new ForbiddenHttpException('You are not authorized to perform this action.');
-		
+
 		return true;
 	}
 
@@ -93,7 +93,7 @@ class StaffController extends Controller
 		} else {
 			return $this->render('create', [
 				'model' => $model,
-			]);			
+			]);
 		}
     }
 
@@ -122,7 +122,7 @@ class StaffController extends Controller
 			]);
 		}
     }
-	
+
 	/**
 	 * Change User password.
 	 *
@@ -138,11 +138,11 @@ class StaffController extends Controller
 		} catch (InvalidParamException $e) {
 			throw new \yii\web\BadRequestHttpException($e->getMessage());
 		}
-	 
+
 		if ($model->load(\Yii::$app->request->post()) && $model->validate() && $model->changePassword()) {
 			Yii::$app->session->setFlash('success', 'Password has been changed successfully!');
 		}
-	 
+
 		return $this->render('changePassword', [
 			'model' => new ChangePasswordForm($id),
 		]);

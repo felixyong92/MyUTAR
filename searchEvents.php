@@ -13,7 +13,7 @@ if (mysqli_connect_errno())
 $keyword=$_GET["keyword"];
  
 // This SQL statement selects ALL from the table 'Locations'
-$sql = "SELECT * FROM event WHERE `title` LIKE '%".$keyword."%' ORDER BY `expiryDate` ASC";
+$sql = "SELECT * FROM event WHERE `title` LIKE '%".$keyword."%' ORDER BY `endDate` ASC";
  
 
 // Check if there are results

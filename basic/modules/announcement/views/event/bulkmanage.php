@@ -9,7 +9,7 @@ use app\modules\announcement\models\Notification;
 /* @var $searchModel app\modules\announcement\models\NotificationSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Backup Event';
+$this->title = 'Bulk Manage Event';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="event-bulkmanage">
@@ -29,7 +29,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
             'title',
             'publishDate',
-            'search date'=>'expiryDate',
+            'startDate',
+            'search date'=>'endDate',
             [
                 'attribute'=>'dId',
                 'filter'=> Yii::$app->user->identity->dsResponsibility == 'Super Admin' ? ArrayHelper::map(Notification::find()->all(), 'dId', 'dId') : ''

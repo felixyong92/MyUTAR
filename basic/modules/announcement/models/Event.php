@@ -11,13 +11,14 @@ use app\models\Department;
  * @property string $title
  * @property string $venue
  * @property string $time
+ * @property string $startDate
+ * @property string $endDate
  * @property string $fee
  * @property string $type
  * @property string $description
  * @property string $publishDate
  * @property string $image
  * @property string $attachment
- * @property string $expiryDate
  * @property string $dId
  *
  * @property Department $d
@@ -32,11 +33,11 @@ class Event extends \yii\db\ActiveRecord
         date_default_timezone_set("Asia/Kuala_Lumpur");
         $currentDate = date('Y-m-d');
 
-        if($currentDate > $this->expiryDate){
+        if($currentDate > $this->endDate){
             return 0;
-        }else if($currentDate == $this->expiryDate){
+        }else if($currentDate == $this->endDate){
             return 1;
-        }else if($currentDate < $this->expiryDate){
+        }else if($currentDate < $this->endDate){
             return 2;
         }
     }
@@ -78,9 +79,9 @@ class Event extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'type', 'expiryDate', 'dId'], 'required'],
+            [['title', 'type', 'endDate', 'dId'], 'required'],
             [['description'], 'string'],
-            [['time','publishDate', 'expiryDate'], 'safe'],
+            [['time','publishDate', 'startDate', 'endDate'], 'safe'],
             [['title', 'type'], 'string', 'max' => 200],
             [['venue', 'fee'], 'string', 'max' => 255],
             [['image', 'attachment'], 'string', 'max' => 1000],
@@ -100,13 +101,14 @@ class Event extends \yii\db\ActiveRecord
             'title' => 'Title',
             'venue' => 'Venue',
             'time' => 'Time',
+            'startDate' => 'Start Date',
+            'endDate' => 'End Date',
             'fee' => 'Fee',
             'type' => 'Type',
             'description' => 'Description',
             'publishDate' => 'Publish Date',
             'image' => 'Image',
             'attachment' => 'Attachment',
-            'expiryDate' => 'Expiry Date',
             'dId' => 'Department',
         ];
     }

@@ -63,9 +63,35 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'venue')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'time')->textInput(['maxlength' => true]) ?>
+    <p><font color ="red">Example: "0800 - 1300 (Monday)"  or   "8:00am - 1:00pm (Monday)"<br>
+       or "0830 - 1730 (Friday & Saturday)" or "0830 - 1730 (Friday) & 1000 - 1500 (Saturday)"
+     </font></p>
+    <?php
+
+     echo $form->field($model, 'startDate')->widget(DatePicker::classname(), [
+         'options' => ['placeholder' => 'Enter Start Date'],
+         'name' => 'startDate',
+         'pluginOptions' => [
+             'autoclose'=>true,
+             'format' => 'yyyy-mm-dd'
+         ]
+     ])
+    ?>
+
+    <?php
+
+     echo $form->field($model, 'endDate')->widget(DatePicker::classname(), [
+         'options' => ['placeholder' => 'Enter End Date'],
+         'name' => 'endDate',
+         'pluginOptions' => [
+             'autoclose'=>true,
+             'format' => 'yyyy-mm-dd'
+         ]
+     ])
+    ?>
 
     <?= $form->field($model, 'fee')->textInput(['maxlength' => true]) ?>
-    
+
     <?= $form->field($model, 'type')->dropDownList(($model->types),
         ['prompt' => "Please choose the event's type"])->label('Type') ?>
 
@@ -178,18 +204,6 @@ use yii\helpers\ArrayHelper;
     ])->label(false); ?>
 
   <br/>
-
-   <?php
-
-    echo $form->field($model, 'expiryDate')->widget(DatePicker::classname(), [
-        'type' => DatePicker::TYPE_COMPONENT_PREPEND,
-        'options' => ['placeholder' => 'Enter Expiry Date'],
-        'pluginOptions' => [
-            'autoclose'=>true,
-            'format' => 'yyyy-mm-dd'
-        ]
-    ]);
-   ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-success']) ?>

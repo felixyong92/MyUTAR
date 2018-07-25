@@ -51,7 +51,7 @@ AppAsset::register($this);
 			[
                 'label' => 'Manage Staff',
                 'url' => ['/staff/staff'],
-				'visible' => Yii::$app->user->identity->dsResponsibility == 'Super Admin',
+				'visible' => Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User')
             ],
             [
                 'label' => 'Bulk Manage',

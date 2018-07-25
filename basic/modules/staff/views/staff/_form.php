@@ -17,7 +17,7 @@ use yii\helpers\ArrayHelper;
 	<?= $form->field($model, 'dsName')->textInput(['maxlength' => true]) ?>
 	<?= $form->field($model, 'dsEmail')->input('email') ?>
 	<?= $form->field($model, 'dsResponsibility')->checkboxList(
-			['Notification' => 'Manage Notification Announcement', 'Event' => 'Manage Event Announcement']
+			['Notification' => 'Manage Notification Announcement', 'Event' => 'Manage Event Announcement', 'Manage User' => 'Manage User']
    );
 	?>
 

@@ -21,7 +21,7 @@ class EventSearch extends Event
     {
         return [
             [['id'], 'integer'],
-            [['title', 'venue', 'time', 'fee', 'type', 'description', 'publishDate', 'image', 'attachment', 'expiryDate', 'dId', 'status'], 'safe'],
+            [['title', 'venue', 'time', 'startDate', 'endDate', 'fee', 'type', 'description', 'publishDate', 'image', 'attachment', 'dId', 'status'], 'safe'],
         ];
     }
 
@@ -77,22 +77,23 @@ class EventSearch extends Event
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'venue', $this->venue])
 						->andFilterWhere(['like', 'time', $this->time])
+						->andFilterWhere(['like', 'startDate', $this->startDate])
+						->andFilterWhere(['like', 'endDate', $this->endDate])
 						->andFilterWhere(['like', 'fee', $this->fee])
 						->andFilterWhere(['like', 'type', $this->type])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'publishDate', $this->publishDate])
-            ->andFilterWhere(['like', 'expiryDate', $this->expiryDate])
             ->andFilterWhere(['like', 'attachment', $this->attachment])
 			->andFilterWhere(['like', 'dId', $this->department])
             ->andFilterWhere(['like', 'dId', $this->dId]);
 
         if($this->status =='Upcoming'){
-            $query->andFilterWhere(['>', 'expiryDate', $currentDate]);
+            $query->andFilterWhere(['>', 'endDate', $currentDate]);
         }else if($this->status =='Archived'){
-            $query->andFilterWhere(['<', 'expiryDate', $currentDate]);
+            $query->andFilterWhere(['<', 'endDate', $currentDate]);
         } else if($this->status =='Today'){
-            $query->andFilterWhere(['expiryDate' => $currentDate]);
+            $query->andFilterWhere(['endDate' => $currentDate]);
         }
 
         // var_dump($this->status);exit();

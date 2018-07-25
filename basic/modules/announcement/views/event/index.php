@@ -43,6 +43,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'venue',
             'time',
+            'startDate',
+            'endDate',
             'fee',
              ['label' => 'Type',
             'value' => function($model){
@@ -51,7 +53,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'filter' =>  $type_array,
             ],
             'publishDate',
-            'expiryDate',
              ['label' => 'Status',
             'value' => function($model){
                 return $model->expiredText;},

@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
         date_default_timezone_set("Asia/Kuala_Lumpur");
         $currentDate = date("Y-m-d");
-        if($currentDate > $model->expiryDate){
+        if($currentDate > $model->endDate){
     ?>
 
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -71,6 +71,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'venue',
             'time',
+            'startDate',
+            'endDate',
             'fee',
             'type',
             'description:ntext',
@@ -83,7 +85,6 @@ $this->params['breadcrumbs'][] = $this->title;
              'format'=>'raw',
              'value'=>$htmlAttachment,
              ],
-            'expiryDate',
             ['label' => 'Department',
              'value'=> $model->dId,
              ],
