@@ -10,16 +10,19 @@ if (mysqli_connect_errno())
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
  
-// This SQL statement selects ALL from the table 'Locations'
-$sql = "SELECT * FROM department ORDER BY `dId`";
+$keyword=$_GET["keyword"];
  
+// This SQL statement selects ALL from the table 'Locations'
+$sql = "SELECT * FROM event WHERE `title` LIKE '%".$keyword."%' ORDER BY `expiryDate` ASC";
+ 
+
 // Check if there are results
 if ($result = mysqli_query($con, $sql))
 {
 	// If so, then create a results array and a temporary one
 	// to hold the data
 	$resultArray = array();
-	$resultArray["department"] = array();
+	$resultArray["event"] = array();
 	$tempArray = array();
  
 	// Loop through each row in the result set
@@ -27,7 +30,7 @@ if ($result = mysqli_query($con, $sql))
 	{
 		// Add each row into our results array
 		$tempArray = $row;
-	    array_push($resultArray["department"], $tempArray);
+	    array_push($resultArray["event"], $tempArray);
 	}
  
 	// Finally, encode the array to JSON and output the results

@@ -1,7 +1,7 @@
 <?php
  
 // Create connection
-$con=mysqli_connect("localhost","id5194333_limrs","1403537","id5194333_myutar");
+$con=mysqli_connect("localhost","admin","1301466admin","myUtar");
 mysqli_set_charset( $con, 'utf8');
  
 // Check connection
