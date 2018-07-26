@@ -43,9 +43,9 @@ AppAsset::register($this);
 				'visible' => Yii::$app->user->identity->dsResponsibility == 'Super Admin' || Yii::$app->user->identity->dsResponsibility != 'Notification' || Yii::$app->user->identity->dsResponsibility != 'Event',
                 'items' => [
                      ['label' => 'Notification', 'url' => '?r=announcement/notification',
-					 'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') || Yii::$app->user->identity->dsResponsibility == 'Super Admin'],
+					 'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') || Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User')],
                      ['label' => 'Event', 'url' => '?r=announcement/event',
-					 'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Event') || Yii::$app->user->identity->dsResponsibility == 'Super Admin'],
+					 'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Event') || Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User')],
             ],
           ],
 			[
@@ -55,22 +55,22 @@ AppAsset::register($this);
             ],
             [
                 'label' => 'Bulk Manage',
-        'visible' => Yii::$app->user->identity->dsResponsibility == 'Super Admin' || Yii::$app->user->identity->dsResponsibility != 'Notification' || Yii::$app->user->identity->dsResponsibility != 'Event',
+        'visible' => Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User') || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage Notification') || stristr(Yii::$app->user->identity->dsResponsibility, 'Event'),
                 'items' => [
                      ['label' => 'Notification', 'url' => '?r=announcement%2Fnotification%2Fbulkmanage',
-           'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') || Yii::$app->user->identity->dsResponsibility == 'Super Admin'],
+           'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') || Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User')],
                      ['label' => 'Event', 'url' => '?r=announcement%2Fevent%2Fbulkmanage',
-           'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Event') || Yii::$app->user->identity->dsResponsibility == 'Super Admin'],
+           'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Event') || Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User')],
             ],
           ],
           [
               'label' => 'Backup',
-      'visible' => Yii::$app->user->identity->dsResponsibility == 'Super Admin' || Yii::$app->user->identity->dsResponsibility != 'Notification' || Yii::$app->user->identity->dsResponsibility != 'Event',
+      'visible' => Yii::$app->user->identity->dsResponsibility == 'Super Admin' || Yii::$app->user->identity->dsResponsibility != 'Notification' || Yii::$app->user->identity->dsResponsibility != 'Event' || Yii::$app->user->identity->dsResponsibility == 'Manage User',
               'items' => [
                    ['label' => 'Notification', 'url' => '?r=announcement%2Fnotification%2Fbackup',
-         'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') || Yii::$app->user->identity->dsResponsibility == 'Super Admin'],
+         'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') || Yii::$app->user->identity->dsResponsibility == 'Super Admin' || Yii::$app->user->identity->dsResponsibility == 'Manage User'],
                    ['label' => 'Event', 'url' => '?r=announcement%2Fevent%2Fbackup',
-         'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Event') || Yii::$app->user->identity->dsResponsibility == 'Super Admin'],
+         'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Event') || Yii::$app->user->identity->dsResponsibility == 'Super Admin' || Yii::$app->user->identity->dsResponsibility == 'Manage User'],
           ],
         ],
 			[

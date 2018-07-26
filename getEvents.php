@@ -11,8 +11,9 @@ if (mysqli_connect_errno())
 }
  
 $date = $_GET['date'];
+
 // This SQL statement selects ALL from the table 'Locations'
-$sql = "SELECT * FROM event WHERE `expiryDate` LIKE '%".$date."%' ORDER BY `endDate` ASC";
+$sql = "SELECT * FROM event WHERE `endDate` LIKE '%".$date."%' ORDER BY `endDate` ASC";
  
 
 // Check if there are results

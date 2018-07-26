@@ -34,7 +34,7 @@ class EventController extends Controller
 	{
         if (Yii::$app->user->isGuest)
             Yii::$app->user->loginRequired();
-		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && !stristr(Yii::$app->user->identity->dsResponsibility, 'Event'))
+		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && !stristr(Yii::$app->user->identity->dsResponsibility, 'Event') && !stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User'))
 			throw new ForbiddenHttpException('You are not authorized to perform this action.');
 
 		return true;

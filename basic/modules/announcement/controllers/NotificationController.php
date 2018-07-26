@@ -35,7 +35,7 @@ class NotificationController extends Controller
 	{
         if (Yii::$app->user->isGuest)
             Yii::$app->user->loginRequired();
-		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && !stristr(Yii::$app->user->identity->dsResponsibility, 'Notification'))
+		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && !stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') && !stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User'))
 			throw new ForbiddenHttpException('You are not authorized to perform this action.');
 
 		return true;
