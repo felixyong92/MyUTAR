@@ -13,7 +13,7 @@ use app\modules\announcement\models\Notification;
 class NotificationSearch extends Notification
 {
 	public $department = '';
-	
+
     /**
      * @inheritdoc
      */
@@ -21,7 +21,7 @@ class NotificationSearch extends Notification
     {
         return [
             [['id', 'status'], 'integer'],
-            [['title', 'description', 'publishDate', 'image', 'attachment', 'link', 'department', 'dId'], 'safe'],
+            [['title', 'description', 'publishDate', 'image', 'attachment', 'link', 'dId'], 'safe'],
         ];
     }
 
@@ -59,7 +59,7 @@ class NotificationSearch extends Notification
             // $query->where('0=1');
             return $dataProvider;
         }
-		
+
 		if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin') {
 			$this->department = Yii::$app->user->identity->dId;
 		}
@@ -77,7 +77,6 @@ class NotificationSearch extends Notification
             ->andFilterWhere(['like', 'attachment', $this->attachment])
             ->andFilterWhere(['like', 'publishDate', $this->publishDate])
             ->andFilterWhere(['like', 'link', $this->link])
-            ->andFilterWhere(['like', 'department', $this->department])
             ->andFilterWhere(['like', 'dId', $this->dId]);
 
         return $dataProvider;

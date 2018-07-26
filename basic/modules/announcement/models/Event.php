@@ -56,8 +56,11 @@ class Event extends \yii\db\ActiveRecord
             return array(
                     'Competition' => 'Competition',
                     'Talk' => 'Talk',
-                    'Seminar/Course/Workshop' => 'Seminar/Course/Workshop',
+                    'Seminar' => 'Seminar',
+                    'Course' => 'Course',
+                    'Workshop' => 'Workshop',
                     'Campaign/Festival' => 'Campaign/Festival',
+                    'Festival' => 'Festival',
                     'Others' => 'Others',
 
 

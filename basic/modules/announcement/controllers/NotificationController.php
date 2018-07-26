@@ -176,7 +176,6 @@ class NotificationController extends Controller
 
 
             $model->dId = Yii::$app->user->identity->dId;
-            $model->department = Yii::$app->user->identity->dId;
             if($model->save()){
                 return $this->redirect(['view', 'id' => $model->id]);
             }else{

@@ -14,7 +14,6 @@ use app\models\Department;
  * @property string $image
  * @property string $attachment
  * @property string $link
- * @property string $department
  * @property integer $status
  * @property string $dId
  *
@@ -28,14 +27,14 @@ class Notification extends \yii\db\ActiveRecord
     public function getStatusText() {
             return $this->statusOptions[$this->status];
     }
-    
+
     public function getStatusOptions() {
             return array(
                     0 => 'Active',
                     1 => 'Archived',
             );
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -57,7 +56,6 @@ class Notification extends \yii\db\ActiveRecord
             [['title'], 'string', 'max' => 200],
             [['image', 'attachment'], 'string', 'max' => 1000],
             [['link'], 'string', 'max' => 255],
-            [['department'], 'string', 'max' => 50],
             [['dId'], 'string', 'max' => 20],
             [['dId'], 'exist', 'skipOnError' => true, 'targetClass' => Department::className(), 'targetAttribute' => ['dId' => 'dId']],
             [['images_Temp', 'attachments_Temp'], 'safe'],
@@ -77,7 +75,6 @@ class Notification extends \yii\db\ActiveRecord
             'image' => 'Image',
             'attachment' => 'Attachment',
             'link' => 'Link',
-            'department' => 'Department',
             'status' => 'Status',
             'dId' => 'Department',
         ];
@@ -91,6 +88,3 @@ class Notification extends \yii\db\ActiveRecord
         return $this->hasOne(Department::className(), ['dId' => 'dId']);
     }
 }
-
-
-
