@@ -65,7 +65,21 @@ class EventController extends Controller
       ]);
     }
 
-    public function actionBackup($id)
+    public function actionBulk(){
+      $action=Yii::$app->request->post('action');
+      $selection=(array)Yii::$app->request->post('selection');//typecasting
+      foreach($selection as $id){
+      if($action=="d"){
+        Event::deleteAll('ID=:id',['id'=>$id]);
+      }
+        if($action=="a"){
+          Event::updateAll(['status' => 1],['id'=>$id]);
+        }
+      }
+      return $this->redirect('index.php?r=announcement%2Fevent%2Fbulkmanage');
+    }
+
+    public function actionBackup()
     {
       $searchModel = new EventSearch();
       $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

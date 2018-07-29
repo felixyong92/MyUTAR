@@ -17,6 +17,7 @@ use app\models\Department;
  * @property string $type
  * @property string $description
  * @property string $publishDate
+ * @property string $status
  * @property string $image
  * @property string $attachment
  * @property string $dId
@@ -44,12 +45,23 @@ class Event extends \yii\db\ActiveRecord
 
     public function getExpiredText(){
 
-        if($this->expired==0)
-            return 'Archived';
-        else if($this->expired==1)
-            return 'Today';
-        else if($this->expired==2)
-            return 'Upcoming';
+       if($this->expired==0)
+           return 'Archived';
+       else if($this->expired==1)
+           return 'Today';
+       else if($this->expired==2)
+           return 'Upcoming';
+   }
+
+    public function getStatusText() {
+            return $this->statusOptions[$this->status];
+    }
+
+    public function getStatusOptions() {
+            return array(
+                    0 => 'Active',
+                    1 => 'Archived',
+            );
     }
 
     public function getTypes() {
@@ -86,6 +98,7 @@ class Event extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['time','publishDate', 'startDate', 'endDate'], 'safe'],
             [['title', 'type'], 'string', 'max' => 200],
+            [['status'], 'integer'],
             [['venue', 'fee'], 'string', 'max' => 255],
             [['image', 'attachment'], 'string', 'max' => 1000],
             [['dId'], 'string', 'max' => 20],
@@ -110,6 +123,7 @@ class Event extends \yii\db\ActiveRecord
             'type' => 'Type',
             'description' => 'Description',
             'publishDate' => 'Publish Date',
+            'status' => 'Status',
             'image' => 'Image',
             'attachment' => 'Attachment',
             'dId' => 'Department',

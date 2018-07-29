@@ -28,12 +28,11 @@ $this->params['breadcrumbs'][] = $this->title;
     ];
    ?>
 
-   <?php $expired_array = [
-        'Upcoming' => 'Upcoming',
-        'Today' => 'Today',
-        'Archived' => 'Archived',
-    ];
-   ?>
+   <?php $status_array = [
+       0 => 'Active',
+       1 => 'Archived'
+   ];
+  ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -55,9 +54,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'publishDate',
              ['label' => 'Status',
             'value' => function($model){
-                return $model->expiredText;},
+                return $model->statusText;},
             'attribute' => 'status',
-            'filter' =>  $expired_array,
+            'filter' =>  $status_array,
             ],
             [
                 'attribute'=>'dId',

@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
-use app\modules\announcement\models\Notification;
+use app\modules\announcement\models\Event;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\announcement\models\NotificationSearch */
@@ -22,6 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
         1 => 'Archived'
     ];
    ?>
+
+   <?=Html::beginForm(['event/bulk'],'post');?>
+   <?=Html::dropDownList('action','',[''=>'Choose an action: ','d'=>'Delete','a'=>'Archive'],['class'=>'dropdown',])?>
+   <?=Html::submitButton('Apply', ['class' => 'btn btn-info',]);?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -31,19 +35,22 @@ $this->params['breadcrumbs'][] = $this->title;
             'publishDate',
             'startDate',
             'search date'=>'endDate',
+            ['label' => 'Status',
+           'value' => function($model){
+               return $model->statusText;},
+           'attribute' => 'status',
+           'filter' =>  $status_array,
+           ],
             [
                 'attribute'=>'dId',
-                'filter'=> Yii::$app->user->identity->dsResponsibility == 'Super Admin' ? ArrayHelper::map(Notification::find()->all(), 'dId', 'dId') : ''
+                'filter'=> Yii::$app->user->identity->dsResponsibility == 'Super Admin' ? ArrayHelper::map(Event::find()->all(), 'dId', 'dId') : ''
             ],
             ['class' => 'yii\grid\ActionColumn',
           'template'=> '{view}',
         ],
-            ['class' => 'yii\grid\CheckboxColumn', 'checkboxOptions' => function($data) {
-                return ['value' => $data->id];
-            },
+            ['class' => 'yii\grid\CheckboxColumn',
           ],
         ],
     ]); ?>
-    <input type="button" class="btn btn-info" value="Multiple Delete" id="Multiple Delete" >
-    <input type="button" class="btn btn-info" value="Multiple Archive" id="Multiple Archive" >
+    <?= Html::endForm();?>
 </div>

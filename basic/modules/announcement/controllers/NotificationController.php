@@ -64,24 +64,26 @@ class NotificationController extends Controller
     {
       $searchModel = new NotificationSearch();
       $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
       return $this->render('bulkmanage', [
         'searchModel' => $searchModel,
           'dataProvider' => $dataProvider,
       ]);
     }
 
-    public function actionMultipleDelete()
-    {
-       //echo "actionMultidel"; exit;
-        $pk = Yii::$app->request->post('row_id');
-        foreach ($pk as $key => $value)
-        {
-            $sql = "DELETE FROM notification WHERE id = $value";
-            $query = Yii::$app->db->createCommand($sql)->execute();
+    public function actionBulk(){
+      $action=Yii::$app->request->post('action');
+    $selection=(array)Yii::$app->request->post('selection');//typecasting
+    foreach($selection as $id){
+      if($action=="d"){
+        Notification::deleteAll('ID=:id',['id'=>$id]);
+      }
+        if($action=="a"){
+          Notification::updateAll(['status' => 1],['id'=>$id]);
         }
-        return $this->redirect(['index']);
+      }
+      return $this->redirect('index.php?r=announcement%2Fnotification%2Fbulkmanage');
     }
+
 
     public function actionBackup()
     {

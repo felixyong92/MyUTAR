@@ -22,27 +22,34 @@ $this->params['breadcrumbs'][] = $this->title;
         1 => 'Archived'
     ];
    ?>
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            'title',
-            'publishDate',
-            [
-                'attribute'=>'dId',
-                'filter'=> Yii::$app->user->identity->dsResponsibility == 'Super Admin' ? ArrayHelper::map(Notification::find()->all(), 'dId', 'dId') : ''
+   <?=Html::beginForm(['notification/bulk'],'post');?>
+   <?=Html::dropDownList('action','',[''=>'Choose an action: ','d'=>'Delete','a'=>'Archive'],['class'=>'dropdown',])?>
+   <?=Html::submitButton('Apply', ['class' => 'btn btn-info',]);?>
+     <?= GridView::widget([
+         'dataProvider' => $dataProvider,
+         'filterModel' => $searchModel,
+         'columns' => [
+             ['class' => 'yii\grid\SerialColumn'],
+             'title',
+             'publishDate',
+             ['label' => 'Status',
+            'value' => function($model){
+                return $model->statusText;},
+            'attribute' => 'status',
+            'filter' =>  $status_array,
             ],
-            ['class' => 'yii\grid\ActionColumn',
-          'template'=> '{view}',
-        ],
-            ['class' => 'yii\grid\CheckboxColumn', 'checkboxOptions' => function($data) {
-                return ['value' => $data->id];
-            },
-      ],
+             [
+                 'attribute'=>'dId',
+                 'filter'=> Yii::$app->user->identity->dsResponsibility == 'Super Admin' ? ArrayHelper::map(Notification::find()->all(), 'dId', 'dId') : ''
+             ],
+             ['class' => 'yii\grid\ActionColumn',
+           'template'=> '{view}',
+         ],
+             ['class' => 'yii\grid\CheckboxColumn',
+           ],
+         ],
+     ]); ?>
+     <?= Html::endForm();?>
 
-        ],
-    ]); ?>
-    <input type="button" class="btn btn-info" value="Multiple Delete" id="Multiple Delete" >
-    <input type="button" class="btn btn-info" value="Multiple Archive" id="Multiple Archive" >
+
 </div>

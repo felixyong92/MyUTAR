@@ -84,6 +84,7 @@ class EventSearch extends Event
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'publishDate', $this->publishDate])
+						->andFilterWhere(['like', 'status', $this->status])
             ->andFilterWhere(['like', 'attachment', $this->attachment])
 			->andFilterWhere(['like', 'dId', $this->department])
             ->andFilterWhere(['like', 'dId', $this->dId]);
