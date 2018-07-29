@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
      $htmlImg = '';
      if($images){
          foreach ($images as $image) {
-             $htmlImg.='<img src="uploads/images/'.$image.'" height="250px" alt="">';
+             $htmlImg.='<img src='.$image.'>';
          }
      }
 
@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
     if($attachments){
 
         foreach ($attachments as $attachment) {
-            $htmlAttachment.='<a href="uploads/attachments/'.$attachment.'" download>'.$attachment.'</a><br/>';
+            $htmlAttachment.='<a href='.$attachment.'>'.$attachment.'</a><br/>';
         }
     }
 

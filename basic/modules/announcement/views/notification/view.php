@@ -15,8 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        
-        
+
+
         <?php if($model->status==1){ ?>
          <?= Html::a('Unachive', ['unarchive', 'id' => $model->id], [
             'class' => 'btn btn-primary',
@@ -43,24 +43,24 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
         <?php } ?>
     </p>
-    <?php 
+    <?php
      $htmlImg = '';
      if($images){
          foreach ($images as $image) {
-             $htmlImg.='<img src="uploads/images/'.$image.'" height="250px" alt="">';
+             $htmlImg.='<img src='.$image.'>';
          }
      }
-      
+
     ?>
-     <?php 
+     <?php
     $htmlAttachment = '';
     if($attachments){
-    
+
         foreach ($attachments as $attachment) {
-            $htmlAttachment.='<a href="uploads/attachments/'.$attachment.'" download>'.$attachment.'</a><br/>';
-        }
+              $htmlAttachment.='<a href='.$attachment.'>'.$attachment.'</a><br/>';
+            }
     }
-  
+
     ?>
     <?= DetailView::widget([
         'model' => $model,
