@@ -1,0 +1,9 @@
+This will give you the name of apache user.
+ps -ef | grep apache | grep -v grep
+
+In most of the cases the user will be www-data.
+
+Run these command after going into the /frontend/web folder:
+sudo chgrp www-data ./assets
+and
+sudo chmod g+w ./assets/

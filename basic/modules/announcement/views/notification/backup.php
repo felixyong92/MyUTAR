@@ -16,12 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-
-    <?php $status_array = [
-        0 => 'Active',
-        1 => 'Archived'
-    ];
-   ?>
+    <?=Html::beginForm(['notification/backupall'],'post');?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
@@ -38,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
       ],
         ],
     ]); ?>
-    <input type="button" class="btn btn-info" value="Backup Selected" id="backup" >
+    <?=Html::submitButton('Backup', ['class' => 'btn btn-info',]);?>
+    <?= Html::endForm();?>
 
 </div>

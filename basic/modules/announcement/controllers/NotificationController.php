@@ -96,6 +96,26 @@ class NotificationController extends Controller
       ]);
     }
 
+    public function actionBackupall(){
+      $datas = array();
+      $selection=(array)Yii::$app->request->post('selection');
+      \Yii::$app->response->format = \yii\web\Response::FORMAT_XML;
+
+      foreach($selection as $id){
+      $notifications = Notification::find()->where('ID=:id',['id'=>$id])->all();
+      foreach ($notifications as $notification){
+        $datas[] = $notification;
+      }
+    }
+
+    $xmldata = '';
+    file_put_contents('backup.xml',$xmldata);
+    header('Content-type: text/xml');
+    header('Content-Disposition: Attachment; filename="backup.xml"');
+    readfile('backup.xml');
+    return $datas;
+    }
+
     /**
      * Displays a single Notification model.
      * @param integer $id
@@ -128,25 +148,36 @@ class NotificationController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
+
+
     public function actionCreate()
     {
         $model = new Notification();
 
-        if ($model->load(Yii::$app->request->post())) {
+      if ($model->load(Yii::$app->request->post())) {
 
             $post= Yii::$app->request->post();
-            $images_path=[];
+
+            $model->attributes=$_POST['Notification'];
+            $name = $model->dId = Yii::$app->user->identity->dId;
+            $filename = pathinfo($name, PATHINFO_FILENAME);
+            $ext = pathinfo($name, PATHINFO_EXTENSION);
+
+            $newName = $filename."-".date("m-d-Y", time()).'.'.$ext;
+            //$fullImgSource = Yii::getPathOfAlias('webroot').'/upload/'.$newName;
+            $images_path=[''];
             $attachments_path=[];
             // var_dump( );exit();
             // foreach ($post['Safety']['images_Temp'] as $image) {\
 
             $image_instaces = UploadedFile::getInstances($model,'images_Temp');
 
+
             foreach ($image_instaces as $instance) {
 
                 if($instance){
-                    $path = $instance->baseName . '.' . $instance->extension;
-                    $instance->saveAs('uploads/images/' . $path);
+                    $path = $newName . $instance->extension;
+                    $instance->saveAs('uploads/images/Notification' . $path);
                     array_push($images_path,$path);
                 }
             }

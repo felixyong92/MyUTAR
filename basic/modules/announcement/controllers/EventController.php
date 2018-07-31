@@ -8,8 +8,13 @@ use app\modules\announcement\models\EventSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\helpers\BaseArrayHelper;
+use yii\helpers\ArrayHelper;
+use LSS\Array2XML;
+
 /**
  * EventController implements the CRUD actions for Event model.
  */
@@ -85,9 +90,30 @@ class EventController extends Controller
       $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
       return $this->render('backup', [
+          'searchModel' => $searchModel,
           'dataProvider' => $dataProvider,
       ]);
     }
+
+    public function actionBackupall(){
+      $datas = array();
+      $selection=(array)Yii::$app->request->post('selection');
+      \Yii::$app->response->format = \yii\web\Response::FORMAT_XML;
+
+      foreach($selection as $id){
+      $events = Event::find()->where('ID=:id',['id'=>$id])->all();
+      foreach ($events as $event){
+        $datas[] = $event;
+      }
+    }
+
+    $xmldata = '';
+    file_put_contents('backup.xml',$xmldata);
+    header('Content-type: text/xml');
+    header('Content-Disposition: Attachment; filename="backup.xml"');
+    readfile('backup.xml');
+    return $datas;
+  }
 
     /**
      * Displays a single Event model.

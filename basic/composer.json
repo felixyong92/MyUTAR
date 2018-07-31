@@ -20,7 +20,9 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0",
         "kartik-v/yii2-widget-datepicker": "@dev",
         "kartik-v/yii2-widget-fileinput": "@dev",
-        "kartik-v/yii2-widgets": "*"
+        "kartik-v/yii2-widgets": "*",
+        "spatie/array-to-xml": "^2.7",
+        "openlss/lib-array2xml": "^0.5.1"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
