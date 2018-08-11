@@ -8,12 +8,9 @@ use app\modules\announcement\models\EventSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
-use yii\web\Response;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
-use yii\helpers\BaseArrayHelper;
-use yii\helpers\ArrayHelper;
-use LSS\Array2XML;
+use yii\web\Response;
 
 /**
  * EventController implements the CRUD actions for Event model.
@@ -35,15 +32,15 @@ class EventController extends Controller
         ];
     }
 
-	public function beforeAction($action)
-	{
-        if (Yii::$app->user->isGuest)
-            Yii::$app->user->loginRequired();
-		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && !stristr(Yii::$app->user->identity->dsResponsibility, 'Event') && !stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User'))
-			throw new ForbiddenHttpException('You are not authorized to perform this action.');
+    public function beforeAction($action)
+  	{
+          if (Yii::$app->user->isGuest)
+              Yii::$app->user->loginRequired();
+  		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && !stristr(Yii::$app->user->identity->dsResponsibility, 'Event'))
+  			throw new ForbiddenHttpException('You are not authorized to perform this action.');
 
-		return true;
-	}
+  		return true;
+  	}
 
     /**
      * Lists all Event models.
@@ -54,6 +51,8 @@ class EventController extends Controller
         $searchModel = new EventSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $dataProvider->pagination->pageSize=20;
+        
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -64,6 +63,8 @@ class EventController extends Controller
       $searchModel = new EventSearch();
       $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+      $dataProvider->pagination->pageSize=20;
+
       return $this->render('bulkmanage', [
           'searchModel' => $searchModel,
           'dataProvider' => $dataProvider,
@@ -71,7 +72,9 @@ class EventController extends Controller
     }
 
     public function actionBulk(){
+      $datas = array();
       $action=Yii::$app->request->post('action');
+      \Yii::$app->response->format = Response::FORMAT_JSON;
       $selection=(array)Yii::$app->request->post('selection');//typecasting
       foreach($selection as $id){
       if($action=="d"){
@@ -80,67 +83,20 @@ class EventController extends Controller
         if($action=="a"){
           Event::updateAll(['status' => 1],['id'=>$id]);
         }
+        if($action=="b"){
+          $events = Event::find()->where('ID=:id',['id'=>$id])->asArray()->all();
+          foreach ($events as $event){
+            $datas[] = $event;
+          }
+          $jsondata = '';
+          file_put_contents('backup.json',$jsondata);
+          header('Content-type: text/json');
+          header('Content-Disposition: Attachment; filename="backup.json"');
+          readfile('backup.json');
+          return $datas;
+        }
       }
       return $this->redirect('index.php?r=announcement%2Fevent%2Fbulkmanage');
-    }
-
-    public function actionBackup()
-    {
-      $searchModel = new EventSearch();
-      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-      return $this->render('backup', [
-          'searchModel' => $searchModel,
-          'dataProvider' => $dataProvider,
-      ]);
-    }
-
-    public function actionBackupall(){
-      $datas = array();
-      $selection=(array)Yii::$app->request->post('selection');
-      \Yii::$app->response->format = \yii\web\Response::FORMAT_XML;
-
-      foreach($selection as $id){
-      $events = Event::find()->where('ID=:id',['id'=>$id])->all();
-      foreach ($events as $event){
-        $datas[] = $event;
-      }
-    }
-
-    $xmldata = '';
-    file_put_contents('backup.xml',$xmldata);
-    header('Content-type: text/xml');
-    header('Content-Disposition: Attachment; filename="backup.xml"');
-    readfile('backup.xml');
-    return $datas;
-  }
-
-    /**
-     * Displays a single Event model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        $model = $this->findModel($id);
-        date_default_timezone_set("Asia/Kuala_Lumpur");
-
-        // var_dump($model->expiredText);exit();
-       if($model->image)
-            $images = explode(",",$model->image);
-        else
-            $images = null;
-
-        if($model->attachment)
-            $attachments = explode(",",$model->attachment);
-        else
-            $attachments = null;
-
-        return $this->render('view', [
-            'model' => $model,
-            'images' => $images,
-            'attachments' => $attachments,
-        ]);
     }
 
     /**
@@ -178,7 +134,7 @@ class EventController extends Controller
 
                 if($instance){
                     $path = $instance->baseName . '.' . $instance->extension;
-                    $instance->saveAs('uploads/attachments/' . $path);
+                    $instance->saveAs('web/uploads/attachments/' . $path);
                     array_push($attachments_path,$path);
                 }
             }

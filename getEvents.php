@@ -1,20 +1,18 @@
 <?php
- 
+
 // Create connection
-$con=mysqli_connect("localhost","admin","1301466admin","myUtar");
+$con=mysqli_connect("localhost","root","","myutar");
 mysqli_set_charset( $con, 'utf8');
- 
+
 // Check connection
 if (mysqli_connect_errno())
 {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
- 
-$date = $_GET['date'];
 
 // This SQL statement selects ALL from the table 'Locations'
-$sql = "SELECT * FROM event WHERE `endDate` LIKE '%".$date."%' ORDER BY `endDate` ASC";
- 
+$sql = "SELECT * FROM event";
+
 
 // Check if there are results
 if ($result = mysqli_query($con, $sql))
@@ -24,7 +22,7 @@ if ($result = mysqli_query($con, $sql))
 	$resultArray = array();
 	$resultArray["event"] = array();
 	$tempArray = array();
- 
+
 	// Loop through each row in the result set
 	while($row = $result->fetch_object())
 	{
@@ -32,11 +30,32 @@ if ($result = mysqli_query($con, $sql))
 		$tempArray = $row;
 	    array_push($resultArray["event"], $tempArray);
 	}
- 
+
+
 	// Finally, encode the array to JSON and output the results
-	echo json_encode($resultArray);
+  //Decode the JSON and convert it into an associative array.
+  $jsonDecoded = implode(",",$resultArray);
+
+  //Give our CSV file a name.
+  $csvFileName = 'backup.csv';
+  //Set the Content-Type and Content-Disposition headers.
+  header('Content-Type: application/excel');
+  header('Content-Disposition: attachment; filename="' . $csvFileName . '"');
+
+  //Open file pointer.
+  //Open up a PHP output stream using the function fopen.
+  $fp = fopen('php://output', 'w');
+
+  //Loop through the associative array.
+  foreach($jsonDecoded as $row){
+      //Write the row to the CSV file.
+      fputcsv($fp, $row);
+  }
+
+  //Finally, close the file pointer.
+  fclose($fp);
 }
- 
+
 // Close connections
 mysqli_close($con);
 ?>

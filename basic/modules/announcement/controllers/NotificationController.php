@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\web\Response;
 
 /**
  * NotificationController implements the CRUD actions for Notification model.
@@ -35,7 +36,7 @@ class NotificationController extends Controller
 	{
         if (Yii::$app->user->isGuest)
             Yii::$app->user->loginRequired();
-		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && !stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') && !stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User'))
+		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && !stristr(Yii::$app->user->identity->dsResponsibility, 'Notification'))
 			throw new ForbiddenHttpException('You are not authorized to perform this action.');
 
 		return true;
@@ -49,6 +50,8 @@ class NotificationController extends Controller
     {
         $searchModel = new NotificationSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $dataProvider->pagination->pageSize=20;
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -64,6 +67,9 @@ class NotificationController extends Controller
     {
       $searchModel = new NotificationSearch();
       $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+      $dataProvider->pagination->pageSize=20;
+
       return $this->render('bulkmanage', [
         'searchModel' => $searchModel,
           'dataProvider' => $dataProvider,
@@ -71,17 +77,31 @@ class NotificationController extends Controller
     }
 
     public function actionBulk(){
+      $datas = array();
       $action=Yii::$app->request->post('action');
-    $selection=(array)Yii::$app->request->post('selection');//typecasting
-    foreach($selection as $id){
+      \Yii::$app->response->format = Response::FORMAT_JSON;
+      $selection=(array)Yii::$app->request->post('selection');//typecasting
+      foreach($selection as $id){
       if($action=="d"){
         Notification::deleteAll('ID=:id',['id'=>$id]);
       }
         if($action=="a"){
           Notification::updateAll(['status' => 1],['id'=>$id]);
         }
+        if($action=="b"){
+          $events = Notification::find()->where('ID=:id',['id'=>$id])->asArray()->all();
+          foreach ($events as $event){
+            $datas[] = $event;
+          }
+          $jsondata = '';
+          file_put_contents('backup.json',$jsondata);
+          header('Content-type: text/json');
+          header('Content-Disposition: Attachment; filename="backup.json"');
+          readfile('backup.json');
+          return $datas;
+        }
       }
-      return $this->redirect('index.php?r=announcement%2Fnotification%2Fbulkmanage');
+      return $this->redirect('index.php?r=announcement%2Fevent%2Fbulkmanage');
     }
 
 

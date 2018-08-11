@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ];
    ?>
    <?=Html::beginForm(['notification/bulk'],'post');?>
-   <?=Html::dropDownList('action','',[''=>'Choose an action: ','d'=>'Delete','a'=>'Archive'],['class'=>'dropdown',])?>
+   <?=Html::dropDownList('action','',[''=>'Choose an action: ','d'=>'Delete','a'=>'Archive', 'b'=>'Backup'],['class'=>'dropdown',])?>
    <?=Html::submitButton('Apply', ['class' => 'btn btn-info',]);?>
      <?= GridView::widget([
          'dataProvider' => $dataProvider,
