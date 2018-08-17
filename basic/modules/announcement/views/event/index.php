@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use app\modules\announcement\models\Event;
+use asinfotrack\yii2\audittrail\widgets\AuditTrail;
+use asinfotrack\yii2\audittrail\models\AuditTrailEntry;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\announcement\models\EventSearch */
@@ -64,5 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);
+    ?>
+
 </div>

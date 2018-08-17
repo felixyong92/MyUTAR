@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\announcement\models\Event;
+use asinfotrack\yii2\audittrail\behaviors\AuditTrailBehavior;
 
 /**
  * EventSearch represents the model behind the search form about `app\modules\announcement\models\Event`.
@@ -100,5 +101,27 @@ class EventSearch extends Event
         // var_dump($this->status);exit();
         return $dataProvider;
     }
+
+		public function behaviors(){
+    return [
+    	// ...
+    	'audittrail'=>[
+    		'class'=>AuditTrailBehavior::className(),
+
+    		// some of the optional configurations
+    		'ignoredAttributes'=>['created_at','updated_at'],
+    		'consoleUserId'=>1,
+
+        'attributeOutput'=>[
+				'desktop_id'=>function ($value) {
+					$model = Desktop::findOne($value);
+					return sprintf('%s %s', $model->manufacturer, $model->device_name);
+				},
+				'last_checked'=>'datetime',
+			],
+    	],
+    	// ...
+    ];
+}
 
 }

@@ -57,12 +57,28 @@ AppAsset::register($this);
                 'label' => 'Bulk Manage',
         'visible' => Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User') || stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') || stristr(Yii::$app->user->identity->dsResponsibility, 'Event'),
                 'items' => [
-                     ['label' => 'Notification', 'url' => '?r=announcement%2Fnotification%2Fbulkmanage',
+                     ['label' => 'Notification', 'url' => '?r=announcement/notification/bulkmanage',
            'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') || Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User')],
-                     ['label' => 'Event', 'url' => '?r=announcement%2Fevent%2Fbulkmanage',
+                     ['label' => 'Event', 'url' => '?r=announcement/event/bulkmanage',
            'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Event') || Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User')],
             ],
           ],
+          [
+              'label' => 'Recover',
+      'visible' => Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User') || stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') || stristr(Yii::$app->user->identity->dsResponsibility, 'Event'),
+              'items' => [
+                   ['label' => 'Notification', 'url' => '?r=announcement/notification/recover',
+         'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Notification') || Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User')],
+                   ['label' => 'Event', 'url' => '?r=announcement/event/recover',
+         'visible' => stristr(Yii::$app->user->identity->dsResponsibility, 'Event') || Yii::$app->user->identity->dsResponsibility == 'Super Admin' || stristr(Yii::$app->user->identity->dsResponsibility, 'Manage User')],
+          ],
+        ],
+
+        [
+                  'label' => 'User Activity Log',
+                  'url' => ['/staff/staff/activitylog'],
+  				'visible' => Yii::$app->user->identity->dsResponsibility == 'Super Admin',
+              ],
 			[
                 'label' => Yii::$app->user->identity->dsName,
                 'items' => [

@@ -4,6 +4,9 @@ namespace app\modules\announcement\models;
 
 use Yii;
 use app\models\Department;
+use yii\db\ActiveRecord;
+use asinfotrack\yii2\audittrail\behaviors\AuditTrailBehavior;
+
 /**
  * This is the model class for table "event".
  *
@@ -24,11 +27,33 @@ use app\models\Department;
  *
  * @property Department $d
  */
-class Event extends \yii\db\ActiveRecord
+class Event extends ActiveRecord
 {
 
     public $images_Temp;
     public $attachments_Temp;
+
+    public function behaviors(){
+    return [
+    	// ...
+    	'audittrail'=>[
+    		'class'=>AuditTrailBehavior::className(),
+
+    		// some of the optional configurations
+    		'ignoredAttributes'=>['created_at','updated_at'],
+    		'consoleUserId'=>1,
+
+        'attributeOutput'=>[
+				'desktop_id'=>function ($value) {
+					$model = Desktop::findOne($value);
+					return sprintf('%s %s', $model->manufacturer, $model->device_name);
+				},
+				'last_checked'=>'datetime',
+			],
+    	],
+    	// ...
+    ];
+}
 
     public function getExpired(){
         date_default_timezone_set("Asia/Kuala_Lumpur");
@@ -63,7 +88,7 @@ class Event extends \yii\db\ActiveRecord
                     1 => 'Archived',
             );
     }
-
+                                     
     public function getTypes() {
             return array(
                     'Competition' => 'Competition',
@@ -78,7 +103,6 @@ class Event extends \yii\db\ActiveRecord
 
             );
     }
-
 
     /**
      * @inheritdoc

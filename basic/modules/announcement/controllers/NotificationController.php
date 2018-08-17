@@ -136,16 +136,28 @@ class NotificationController extends Controller
     return $datas;
     }
 
+    public function actionRecover(){
+      $searchModel = new NotificationSearch();
+      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+      return $this->render('recover', [
+          'searchModel' => $searchModel,
+          'dataProvider' => $dataProvider,
+      ]);
+    }
+
     /**
-     * Displays a single Notification model.
+     * Displays a single Event model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
         $model = $this->findModel($id);
+        date_default_timezone_set("Asia/Kuala_Lumpur");
 
-        if($model->image)
+        // var_dump($model->expiredText);exit();
+       if($model->image)
             $images = explode(",",$model->image);
         else
             $images = null;
@@ -164,86 +176,73 @@ class NotificationController extends Controller
 
 
     /**
-     * Creates a new Notification model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
+         * Creates a new Notification model.
+         * If creation is successful, the browser will be redirected to the 'view' page.
+         * @return mixed
+         */
+        public function actionCreate()
+        {
+            $model = new Notification();
 
+            if ($model->load(Yii::$app->request->post())) {
 
-    public function actionCreate()
-    {
-        $model = new Notification();
+                $post= Yii::$app->request->post();
+                $images_path=[];
+                $attachments_path=[];
+                // var_dump( );exit();
+                // foreach ($post['Safety']['images_Temp'] as $image) {\
 
-      if ($model->load(Yii::$app->request->post())) {
+                $image_instaces = UploadedFile::getInstances($model,'images_Temp');
 
-            $post= Yii::$app->request->post();
+                foreach ($image_instaces as $instance) {
 
-            $model->attributes=$_POST['Notification'];
-            $name = $model->dId = Yii::$app->user->identity->dId;
-            $filename = pathinfo($name, PATHINFO_FILENAME);
-            $ext = pathinfo($name, PATHINFO_EXTENSION);
-
-            $newName = $filename."-".date("m-d-Y", time()).'.'.$ext;
-            //$fullImgSource = Yii::getPathOfAlias('webroot').'/upload/'.$newName;
-            $images_path=[''];
-            $attachments_path=[];
-            // var_dump( );exit();
-            // foreach ($post['Safety']['images_Temp'] as $image) {\
-
-            $image_instaces = UploadedFile::getInstances($model,'images_Temp');
-
-
-            foreach ($image_instaces as $instance) {
-
-                if($instance){
-                    $path = $newName . $instance->extension;
-                    $instance->saveAs('uploads/images/Notification' . $path);
-                    array_push($images_path,$path);
+                    if($instance){
+                        $path = $instance->baseName . '.' . $instance->extension;
+                        $instance->saveAs('uploads/images/' . $path);
+                        array_push($images_path,$path);
+                    }
                 }
-            }
 
 
 
-           $att_instaces = UploadedFile::getInstances($model,'attachments_Temp');
+               $att_instaces = UploadedFile::getInstances($model,'attachments_Temp');
 
-            foreach ($att_instaces as $instance) {
+                foreach ($att_instaces as $instance) {
 
-                if($instance){
-                    $path = $instance->baseName . '.' . $instance->extension;
-                    $instance->saveAs('uploads/attachments/' . $path);
-                    array_push($attachments_path,$path);
+                    if($instance){
+                        $path = $instance->baseName . '.' . $instance->extension;
+                        $instance->saveAs('uploads/attachments/' . $path);
+                        array_push($attachments_path,$path);
+                    }
                 }
-            }
 
 
-            if($images_path!=[]){
-                $images_path = implode(",", $images_path);
-                $model->image = $images_path;
-            }
+                if($images_path!=[]){
+                    $images_path = implode(",", $images_path);
+                    $model->image = $images_path;
+                }
 
 
-            if($attachments_path!=[]){
-                $attachments_path = implode(",", $attachments_path);
-                $model->attachment = $attachments_path;
-            }
+                if($attachments_path!=[]){
+                    $attachments_path = implode(",", $attachments_path);
+                    $model->attachment = $attachments_path;
+                }
 
 
-            $model->dId = Yii::$app->user->identity->dId;
-            if($model->save()){
+                $model->dId = Yii::$app->user->identity->dId;
+                if($model->save()){
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }else{
+                    var_dump($model);
+                    exit();
+                }
                 return $this->redirect(['view', 'id' => $model->id]);
-            }else{
-                var_dump($model);
-                exit();
+            } else {
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
             }
-
-
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
         }
-    }
 
     /**
      * Updates an existing Notification model.

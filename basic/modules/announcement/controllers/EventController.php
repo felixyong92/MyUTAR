@@ -5,6 +5,7 @@ namespace app\modules\announcement\controllers;
 use Yii;
 use app\modules\announcement\models\Event;
 use app\modules\announcement\models\EventSearch;
+use app\modules\announcement\models\UploadForm;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
@@ -52,7 +53,7 @@ class EventController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $dataProvider->pagination->pageSize=20;
-        
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -99,75 +100,91 @@ class EventController extends Controller
       return $this->redirect('index.php?r=announcement%2Fevent%2Fbulkmanage');
     }
 
+    public function actionRecover(){
+
+      $model = new UploadForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+
+            if ($model->file && $model->validate()) {
+                $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
+            }
+        }
+
+        return $this->render('recover', ['model' => $model]);
+
+    }
+
     /**
      * Creates a new Event model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new Event();
+     public function actionCreate()
+     {
+         $model = new Event();
 
-        if ($model->load(Yii::$app->request->post())) {
-
-
-            $post= Yii::$app->request->post();
-            $images_path=[];
-            $attachments_path=[];
-
-            $image_instaces = UploadedFile::getInstances($model,'images_Temp');
-
-            foreach ($image_instaces as $instance) {
-
-                if($instance){
-                    $path = $instance->baseName . '.' . $instance->extension;
-                    $instance->saveAs('uploads/images/' . $path);
-                    array_push($images_path,$path);
-                }
-            }
+         if ($model->load(Yii::$app->request->post())) {
 
 
+             $post= Yii::$app->request->post();
+             $images_path=[];
+             $attachments_path=[];
 
-           $att_instaces = UploadedFile::getInstances($model,'attachments_Temp');
+             $image_instaces = UploadedFile::getInstances($model,'images_Temp');
 
-            foreach ($att_instaces as $instance) {
+             foreach ($image_instaces as $instance) {
 
-                if($instance){
-                    $path = $instance->baseName . '.' . $instance->extension;
-                    $instance->saveAs('web/uploads/attachments/' . $path);
-                    array_push($attachments_path,$path);
-                }
-            }
-
-
-            if($images_path!=[]){
-                $images_path = implode(",", $images_path);
-                $model->image = $images_path;
-            }
+                 if($instance){
+                     $path = $instance->baseName . '.' . $instance->extension;
+                     $instance->saveAs('uploads/images/' . $path);
+                     array_push($images_path,$path);
+                 }
+             }
 
 
-            if($attachments_path!=[]){
-                $attachments_path = implode(",", $attachments_path);
-                $model->attachment = $attachments_path;
-            }
+
+            $att_instaces = UploadedFile::getInstances($model,'attachments_Temp');
+
+             foreach ($att_instaces as $instance) {
+
+                 if($instance){
+                     $path = $instance->baseName . '.' . $instance->extension;
+                     $instance->saveAs('uploads/attachments/' . $path);
+                     array_push($attachments_path,$path);
+                 }
+             }
 
 
-            $model->dId = Yii::$app->user->identity->dId;
-
-            if($model->save()){
-                return $this->redirect(['view', 'id' => $model->id]);
-            }else{
-                var_dump($model);
-                exit();
-            }
+             if($images_path!=[]){
+                 $images_path = implode(",", $images_path);
+                 $model->image = $images_path;
+             }
 
 
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
+             if($attachments_path!=[]){
+                 $attachments_path = implode(",", $attachments_path);
+                 $model->attachment = $attachments_path;
+             }
+
+
+             $model->dId = Yii::$app->user->identity->dId;
+
+             if($model->save()){
+                 return $this->redirect(['view', 'id' => $model->id]);
+             }else{
+                 var_dump($model);
+                 exit();
+             }
+
+
+         } else {
+             return $this->render('create', [
+                 'model' => $model,
+             ]);
+         }
+     }
 
     /**
      * Updates an existing Event model.
@@ -326,6 +343,34 @@ class EventController extends Controller
     }
 
     /**
+     * Displays a single Event model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionView($id)
+    {
+        $model = $this->findModel($id);
+        date_default_timezone_set("Asia/Kuala_Lumpur");
+
+        // var_dump($model->expiredText);exit();
+       if($model->image)
+            $images = explode(",",$model->image);
+        else
+            $images = null;
+
+        if($model->attachment)
+            $attachments = explode(",",$model->attachment);
+        else
+            $attachments = null;
+
+        return $this->render('view', [
+            'model' => $model,
+            'images' => $images,
+            'attachments' => $attachments,
+        ]);
+    }
+
+    /**
      * Deletes an existing Event model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
@@ -345,12 +390,12 @@ class EventController extends Controller
      * @return Event the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
-        if (($model = Event::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
+     protected function findModel($id)
+     {
+         if (($model = Event::findOne($id)) !== null) {
+             return $model;
+         } else {
+             throw new NotFoundHttpException('The requested page does not exist.');
+         }
+     }
 }

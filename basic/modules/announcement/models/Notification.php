@@ -3,7 +3,9 @@
 namespace app\modules\announcement\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 use app\models\Department;
+use asinfotrack\yii2\audittrail\behaviors\AuditTrailBehavior;
 /**
  * This is the model class for table "notification".
  *
@@ -19,10 +21,33 @@ use app\models\Department;
  *
  * @property Department $d
  */
-class Notification extends \yii\db\ActiveRecord
+class Notification extends ActiveRecord
 {
     public $images_Temp;
     public $attachments_Temp;
+
+    public function behaviors(){
+    return [
+    	// ...
+    	'audittrail'=>[
+    		'class'=>AuditTrailBehavior::className(),
+
+    		// some of the optional configurations
+    		'ignoredAttributes'=>['created_at','updated_at'],
+    		'consoleUserId'=>1,
+
+        'attributeOutput'=>[
+				'desktop_id'=>function ($value) {
+					$model = Desktop::findOne($value);
+					return sprintf('%s %s', $model->manufacturer, $model->device_name);
+				},
+				'last_checked'=>'datetime',
+			],
+    	],
+    	// ...
+    ];
+}
+
 
     public function getStatusText() {
             return $this->statusOptions[$this->status];
@@ -49,7 +74,7 @@ class Notification extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'department', 'dId'], 'required'],
+            [['title', 'dId'], 'required'],
             [['description'], 'string'],
             [['publishDate'], 'safe'],
             [['status'], 'integer'],

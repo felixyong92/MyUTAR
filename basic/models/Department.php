@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "department".
@@ -14,9 +15,8 @@ use Yii;
  * @property DepartmentStaff[] $departmentStaff
  * @property Event[] $events
  * @property Notification $notification
-
  */
-class Department extends \yii\db\ActiveRecord
+class Department extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -74,5 +74,4 @@ class Department extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Notification::className(), ['dId' => 'dId']);
     }
-
 }

@@ -7,12 +7,20 @@ use app\modules\staff\models\Staff;
 use app\modules\staff\models\StaffSearch;
 use app\modules\staff\models\ChangePasswordForm;
 use app\modules\staff\models\UserChangePasswordForm;
+use app\modules\announcement\models\Event;
+use app\modules\announcement\models\EventSearch;
+use app\modules\announcement\models\Notification;
+use app\modules\announcement\models\NotificationSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use yii\data\Pagination;
+use asinfotrack\yii2\audittrail\models\AuditTrailEntry;
+use asinfotrack\yii2\audittrail\models\AuditTrailEntrySearch;
+use asinfotrack\yii2\audittrail\models\AuditTrailEntryQuery;
+use yii\data\SqlDataProvider;
 
 /**
  * StaffController implements the CRUD actions for Staff model.
@@ -38,7 +46,7 @@ class StaffController extends Controller
 	{
         if (Yii::$app->user->isGuest)
             Yii::$app->user->loginRequired();
-		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && Yii::$app->user->identity->dsResponsibility !== 'Manage User') 
+		else if (Yii::$app->user->identity->dsResponsibility !== 'Super Admin' && Yii::$app->user->identity->dsResponsibility !== 'Manage User')
 			throw new ForbiddenHttpException('You are not authorized to perform this action.');
 
 		return true;
@@ -57,6 +65,29 @@ class StaffController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider
         ]);
+    }
+
+    public function actionActivitylog(){
+      $model = new Notification();
+
+    /*$model = new SqlDataProvider([
+    'sql' => 'SELECT * FROM audit_trail_entry',
+    'key'        => 'id',
+    'pagination' => [
+        'pageSize' => 10,
+    ],
+    'sort' => [
+        'attributes' => [
+            'title',
+            'view_count',
+            'created_at',
+        ],
+    ],
+]);*/
+
+return $this->render('activitylog', [
+    'model' => $model
+]);
     }
 
     /**
