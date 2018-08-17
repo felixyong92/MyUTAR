@@ -79,7 +79,7 @@ class NotificationController extends Controller
     public function actionBulk(){
       $datas = array();
       $action=Yii::$app->request->post('action');
-      \Yii::$app->response->format = Response::FORMAT_JSON;
+      \Yii::$app->response->format = Response::FORMAT_XML;
       $selection=(array)Yii::$app->request->post('selection');//typecasting
       foreach($selection as $id){
       if($action=="d"){
@@ -88,52 +88,22 @@ class NotificationController extends Controller
         if($action=="a"){
           Notification::updateAll(['status' => 1],['id'=>$id]);
         }
-        if($action=="b"){
-          $events = Notification::find()->where('ID=:id',['id'=>$id])->asArray()->all();
-          foreach ($events as $event){
-            $datas[] = $event;
+      }
+      if($action=="b"){
+          foreach($selection as $id){
+            $notifications = Notification::find()->where('ID=:id',['id'=>$id])->asArray()->all();
+            foreach ($notifications as $notification){
+              $datas[] = $notification;
+            }
           }
           $jsondata = '';
-          file_put_contents('backup.json',$jsondata);
-          header('Content-type: text/json');
-          header('Content-Disposition: Attachment; filename="backup.json"');
-          readfile('backup.json');
+          file_put_contents('backup.xml',$jsondata);
+          header('Content-type: text/xml');
+          header('Content-Disposition: Attachment; filename="backup.xml"');
+          readfile('backup.xml');
           return $datas;
         }
-      }
       return $this->redirect('index.php?r=announcement%2Fevent%2Fbulkmanage');
-    }
-
-
-    public function actionBackup()
-    {
-      $searchModel = new NotificationSearch();
-      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-      return $this->render('backup', [
-
-          'dataProvider' => $dataProvider,
-      ]);
-    }
-
-    public function actionBackupall(){
-      $datas = array();
-      $selection=(array)Yii::$app->request->post('selection');
-      \Yii::$app->response->format = \yii\web\Response::FORMAT_XML;
-
-      foreach($selection as $id){
-      $notifications = Notification::find()->where('ID=:id',['id'=>$id])->all();
-      foreach ($notifications as $notification){
-        $datas[] = $notification;
-      }
-    }
-
-    $xmldata = '';
-    file_put_contents('backup.xml',$xmldata);
-    header('Content-type: text/xml');
-    header('Content-Disposition: Attachment; filename="backup.xml"');
-    readfile('backup.xml');
-    return $datas;
     }
 
     public function actionRecover(){

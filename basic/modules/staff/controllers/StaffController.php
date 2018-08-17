@@ -68,9 +68,8 @@ class StaffController extends Controller
     }
 
     public function actionActivitylog(){
-      $model = new Notification();
 
-    /*$model = new SqlDataProvider([
+    $model = new SqlDataProvider([
     'sql' => 'SELECT * FROM audit_trail_entry',
     'key'        => 'id',
     'pagination' => [
@@ -83,10 +82,10 @@ class StaffController extends Controller
             'created_at',
         ],
     ],
-]);*/
+]);
 
 return $this->render('activitylog', [
-    'model' => $model
+    'dataProvider' => $model
 ]);
     }
 

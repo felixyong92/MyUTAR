@@ -5,7 +5,7 @@ namespace app\modules\announcement\controllers;
 use Yii;
 use app\modules\announcement\models\Event;
 use app\modules\announcement\models\EventSearch;
-use app\modules\announcement\models\UploadForm;
+use app\models\UploadForm;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
@@ -75,7 +75,7 @@ class EventController extends Controller
     public function actionBulk(){
       $datas = array();
       $action=Yii::$app->request->post('action');
-      \Yii::$app->response->format = Response::FORMAT_JSON;
+      \Yii::$app->response->format = Response::FORMAT_XML;
       $selection=(array)Yii::$app->request->post('selection');//typecasting
       foreach($selection as $id){
       if($action=="d"){
@@ -84,36 +84,78 @@ class EventController extends Controller
         if($action=="a"){
           Event::updateAll(['status' => 1],['id'=>$id]);
         }
-        if($action=="b"){
-          $events = Event::find()->where('ID=:id',['id'=>$id])->asArray()->all();
-          foreach ($events as $event){
-            $datas[] = $event;
+      }
+
+      if($action=="b"){
+          foreach($selection as $id){
+            $events = Event::find()->where('ID=:id',['id'=>$id])->asArray()->all();
+            foreach ($events as $event){
+              $datas[] = $event;
+            }
           }
           $jsondata = '';
-          file_put_contents('backup.json',$jsondata);
-          header('Content-type: text/json');
-          header('Content-Disposition: Attachment; filename="backup.json"');
-          readfile('backup.json');
+          file_put_contents('backup.xml',$jsondata);
+          header('Content-type: text/xml');
+          header('Content-Disposition: Attachment; filename="backup.xml"');
+          readfile('backup.xml');
           return $datas;
+
         }
-      }
       return $this->redirect('index.php?r=announcement%2Fevent%2Fbulkmanage');
     }
 
     public function actionRecover(){
-
+      $configData = [];
       $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
             $model->file = UploadedFile::getInstance($model, 'file');
 
             if ($model->file && $model->validate()) {
-                $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
+                $model->file->saveAs('' . $model->file->baseName . '.' . $model->file->extension);
+                $xmlfile = file_get_contents($model->file);
+                $ob = simplexml_load_string($xmlfile);
+                $arrXml = $this->objectsIntoArray($ob);
+                $json  = json_encode($arrXml);
+                $configData  = json_decode($json, true);
+                return $this->render('convert', [
+                  'model' => $model,
+                  'configData' => $xmlfile,
+              ]);
             }
         }
 
-        return $this->render('recover', ['model' => $model]);
+        return $this->render('recover', [
+          'model' => $model,
+          'configData' => $configData,
+      ]);
 
+    }
+
+    public function actionConvert(){
+
+      return $this->render('convert');
+    }
+
+    public function objectsIntoArray($arrObjData, $arrSkipIndices = array())
+    {
+      $arrData = array();
+      // if input is object, convert into array
+      if (is_object($arrObjData)) {
+        $arrObjData = get_object_vars($arrObjData);
+      }
+      if (is_array($arrObjData)) {
+        foreach ($arrObjData as $index => $value) {
+          if (is_object($value) || is_array($value)) {
+            $value = $this->objectsIntoArray($value, $arrSkipIndices); // recursive call
+          }
+          if (in_array($index, $arrSkipIndices)) {
+            continue;
+          }
+          $arrData[$index] = $value;
+        }
+      }
+      return $arrData;
     }
 
     /**
@@ -126,7 +168,6 @@ class EventController extends Controller
          $model = new Event();
 
          if ($model->load(Yii::$app->request->post())) {
-
 
              $post= Yii::$app->request->post();
              $images_path=[];
@@ -143,8 +184,6 @@ class EventController extends Controller
                  }
              }
 
-
-
             $att_instaces = UploadedFile::getInstances($model,'attachments_Temp');
 
              foreach ($att_instaces as $instance) {
@@ -156,18 +195,15 @@ class EventController extends Controller
                  }
              }
 
-
              if($images_path!=[]){
                  $images_path = implode(",", $images_path);
                  $model->image = $images_path;
              }
 
-
              if($attachments_path!=[]){
                  $attachments_path = implode(",", $attachments_path);
                  $model->attachment = $attachments_path;
              }
-
 
              $model->dId = Yii::$app->user->identity->dId;
 
@@ -177,7 +213,6 @@ class EventController extends Controller
                  var_dump($model);
                  exit();
              }
-
 
          } else {
              return $this->render('create', [

@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
 
-<?= /*GridView::widget([
+<?= GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
@@ -32,20 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'type',
         'data',
     ],
-]);*/
-
- AuditTrail::widget([
-	'model'=>$model,
-
-	// some of the optional configurations
-	'userIdCallback'=>function ($userId, $dataProvider) {
- 		return Staff::findOne($userId)->fullname;
-	},
-	'changeTypeCallback'=>function ($type, $dataProvider) {
-		return Html::tag('span', strtoupper($type), ['class'=>'label label-info']);
-	},
-	'dataTableOptions'=>['class'=>'table table-condensed table-bordered'],
-])
+]);
 ?>
 
 
