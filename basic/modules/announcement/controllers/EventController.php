@@ -12,6 +12,8 @@ use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use yii\web\Response;
+use yii\db\Query;
+use yii\helpers\ArrayHelper;
 
 /**
  * EventController implements the CRUD actions for Event model.
@@ -106,6 +108,8 @@ class EventController extends Controller
 
     public function actionRecover(){
       $configData = [];
+      $datas = array();
+
       $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
@@ -114,23 +118,43 @@ class EventController extends Controller
             if ($model->file && $model->validate()) {
                 $model->file->saveAs('' . $model->file->baseName . '.' . $model->file->extension);
                 $xmlfile = file_get_contents($model->file);
-                $ob = simplexml_load_string($xmlfile);
-                $arrXml = $this->objectsIntoArray($ob);
-                $json  = json_encode($arrXml);
-                $configData  = json_decode($json, true);
+                $arrXML = (array)simplexml_load_string($xmlfile);
                 return $this->render('convert', [
-                  'model' => $model,
-                  'configData' => $xmlfile,
-              ]);
+                  'datas' => $arrXML,
+                ]);
+                foreach($arrXML as $events){
+
+                  foreach($events as $event){
+
+                    $datas [] = $event;
+                  }
+                }
+
+                $ids = ArrayHelper::getColumn($datas, 'id');
+                $titles = ArrayHelper::getColumn($datas, 'title');
+                $prep = array();
+                foreach($datas as $events){
+
+                  foreach ($events as $k=> $v){
+
+                        $prep[':'.$k] = $v;
+
+                  }
+                }
+
+
+
+
+                //$arrXml = $this->objectsIntoArray($ob);
+                //$json  = json_encode($arrXml);
+                //$configData = json_decode($json, true);
+              }
             }
-        }
 
-        return $this->render('recover', [
-          'model' => $model,
-          'configData' => $configData,
-      ]);
-
-    }
+            return $this->render('recover', [
+              'model' => $model,
+            ]);
+          }
 
     public function actionConvert(){
 

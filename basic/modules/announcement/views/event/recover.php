@@ -12,7 +12,6 @@ use app\modules\announcement\models\Event;
 
 $this->title = 'Event Data Recovery';
 $this->params['breadcrumbs'][] = $this->title;
-  echo "<pre>";print_r($configData);echo "</pre>";
 ?>
 
 <div class="event-recover">
@@ -25,7 +24,6 @@ $this->params['breadcrumbs'][] = $this->title;
               'showRemove' => true,
               'showUpload' => false,
               'browseLabel' =>  'Select XML Files',
-              'maxFileSize' => 40000,
           ],
           'options' => [
               'accept' => 'xml/*',

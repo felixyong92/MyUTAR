@@ -88,7 +88,7 @@ class Event extends ActiveRecord
                     1 => 'Archived',
             );
     }
-                                     
+
     public function getTypes() {
             return array(
                     'Competition' => 'Competition',

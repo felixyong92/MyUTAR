@@ -12,13 +12,16 @@ use app\modules\announcement\models\Event;
 
 $this->title = 'Recovery Status';
 $this->params['breadcrumbs'][] = $this->title;
-  echo "<pre>";print_r($configData);echo "</pre>";
+
 ?>
 
 <div class="event-recover">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <div class="event-form">
+    <?php
+    //echo "<pre>";var_dump($keys);echo "</pre>";
+    //$values = $values + array(null);
+    echo "<pre>";print_r($datas);echo "</pre>";
 
-      </div>
+     ?>
 </div>
