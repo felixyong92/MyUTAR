@@ -107,13 +107,35 @@ class NotificationController extends Controller
     }
 
     public function actionRecover(){
-      $searchModel = new NotificationSearch();
-      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+      $datas = array();
 
-      return $this->render('recover', [
-          'searchModel' => $searchModel,
-          'dataProvider' => $dataProvider,
-      ]);
+      $model = new UploadForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+
+            if ($model->file && $model->validate()) {
+                $model->file->saveAs('' . $model->file->baseName . '.' . $model->file->extension);
+                $xmlfile = file_get_contents($model->file);
+                $arrXML = (array)simplexml_load_string($xmlfile);
+                return $this->render('convert', [
+                  'datas' => $arrXML,
+                ]);
+                }
+              }
+            return $this->render('recover', [
+              'model' => $model,
+            ]);
+          }
+
+    public function actionConvert(){
+
+      return $this->render('convert');
+    }
+
+    public function actionConvert(){
+
+      return $this->render('convert');
     }
 
     /**
