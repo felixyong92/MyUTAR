@@ -107,7 +107,6 @@ class EventController extends Controller
     }
 
     public function actionRecover(){
-      $configData = [];
       $datas = array();
 
       $model = new UploadForm();
@@ -122,35 +121,8 @@ class EventController extends Controller
                 return $this->render('convert', [
                   'datas' => $arrXML,
                 ]);
-                foreach($arrXML as $events){
-
-                  foreach($events as $event){
-
-                    $datas [] = $event;
-                  }
                 }
-
-                $ids = ArrayHelper::getColumn($datas, 'id');
-                $titles = ArrayHelper::getColumn($datas, 'title');
-                $prep = array();
-                foreach($datas as $events){
-
-                  foreach ($events as $k=> $v){
-
-                        $prep[':'.$k] = $v;
-
-                  }
-                }
-
-
-
-
-                //$arrXml = $this->objectsIntoArray($ob);
-                //$json  = json_encode($arrXml);
-                //$configData = json_decode($json, true);
               }
-            }
-
             return $this->render('recover', [
               'model' => $model,
             ]);
