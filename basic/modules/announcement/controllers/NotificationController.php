@@ -5,6 +5,7 @@ namespace app\modules\announcement\controllers;
 use Yii;
 use app\modules\announcement\models\Notification;
 use app\modules\announcement\models\NotificationSearch;
+use app\models\UploadForm;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\ForbiddenHttpException;
@@ -107,8 +108,6 @@ class NotificationController extends Controller
     }
 
     public function actionRecover(){
-      $datas = array();
-
       $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
