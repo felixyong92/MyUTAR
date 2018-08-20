@@ -104,7 +104,7 @@ class NotificationController extends Controller
           readfile('backup.xml');
           return $datas;
         }
-      return $this->redirect('index.php?r=announcement%2Fevent%2Fbulkmanage');
+      return $this->redirect('index.php?r=announcement%2Fnotification%2Fbulkmanage');
     }
 
     public function actionRecover(){
@@ -126,11 +126,6 @@ class NotificationController extends Controller
               'model' => $model,
             ]);
           }
-
-    public function actionConvert(){
-
-      return $this->render('convert');
-    }
 
     public function actionConvert(){
 
